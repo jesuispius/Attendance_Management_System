@@ -1,0 +1,191 @@
+#:import rgba kivy.utils.get_color_from_hex
+
+<CaptureFormWindow>:
+    name: "capture_form_window"
+    name_person: name_person
+    id_person: id_person
+    ip_cam: ip_cam
+
+    FloatLayout:
+        cols: 1
+
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'background8.png'
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Label:
+                text: "MAIN FORM"
+                color: rgba('#000000')
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Label:
+                size_hint: 0.5,0.08
+                pos_hint: {"x":0, "top":0.8}
+                text: "IP Camera: "
+                color: rgba('#000000')
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            TextInput:
+                pos_hint: {"x":0.5, "top":0.8}
+                cursor_color: (0,0,0,1)
+                size_hint: 0.4, 0.07
+                id: ip_cam
+                multiline: False
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Label:
+                size_hint: 0.5,0.08
+                pos_hint: {"x":0, "top":0.8-0.13}
+                text: "Name: "
+                color: rgba('#000000')
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            TextInput:
+                pos_hint: {"x":0.5, "top":0.8-0.13}
+                size_hint: 0.4, 0.07
+                cursor_color: (0,0,0,1)
+                id: name_person
+                multiline: False
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Label:
+                size_hint: 0.5,0.08
+                pos_hint: {"x":0, "top":0.8-0.13*2}
+                text: "ID: "
+                color: rgba('#000000')
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            TextInput:
+                pos_hint: {"x":0.5, "top":0.8-0.13*2}
+                size_hint: 0.4, 0.07
+                cursor_color: (0,0,0,1)
+                id: id_person
+                multiline: False
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+        Button:
+            pos_hint:{"x":0.2,"y":0.05}
+            size_hint: 0.6, 0.13
+            text: "Submit"
+            font_size: (root.width**2 + root.height**2) / 14**4
+            background_normal: ''
+            background_color: rgba('#ff6347')
+            color: rgba('#ffffff')
+            on_release:
+                root.manager.transition.direction = "left"
+                root.submit()
+
+
+<CaptureWindow>:
+    name: "capture_window"
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 80, 0, 80, 10
+        spacing: 10
+
+        Button:
+            text: 'Capture now'
+            size_hint_y: None
+            height: '48dp'
+            background_normal: ''
+            background_color: rgba('#ff6347')
+            color: rgba('#ffffff')
+            on_press:
+                root.TakePhoto()
+
+        Button:
+            text: 'Stop capturing'
+            size_hint_y: None
+            height: '48dp'
+            background_normal: ''
+            background_color: rgba('#ff6347')
+            color: rgba('#ffffff')
+            on_press:
+                root.StopCapturing()
+                root.manager.transition.direction = "right"
+                app.root.current = "main_window"
+
+
+<TrackFace>:
+    name: "track_window"
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 80, 0, 80, 10
+        spacing: 10
+
+        Button:
+            text: 'Tracking now'
+            size_hint_y: None
+            height: '48dp'
+            background_normal: ''
+            background_color: rgba('#ff6347')
+            color: rgba('#ffffff')
+            on_press: root.Track()
+
+        Button:
+            text: 'Back to main'
+            size_hint_y: None
+            height: '48dp'
+            background_normal: ''
+            background_color: rgba('#ff6347')
+            color: rgba('#ffffff')
+            on_press:
+                root.DestroyTracking()
+                root.manager.transition.direction = "right"
+                app.root.current = "main_window"
+
+<MainWindow>:
+    name: "main_window"
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background8.png'
+
+    GridLayout:
+        cols: 1
+        Label:
+            text: "WELCOME BACK TO THE MAIN SYSTEM!"
+            font_size: 25
+
+        GridLayout:
+            cols: 3
+            padding: 70, 10, 70, 70
+            spacing: 20, 20
+            Button:
+                text: "Capture"
+                background_normal: ''
+                background_color: rgba('#ff6347')
+                color: rgba('#ffffff')
+                font_size: 18
+                on_release:
+                    root.manager.transition.direction = "left"
+                    app.root.current = "capture_form_window"
+
+            Button:
+                text: "Train"
+                background_normal: ''
+                background_color: rgba('#ff6347')
+                color: rgba('#ffffff')
+                font_size: 18
+                on_release:
+                    root.TrainImages()
+
+            Button:
+                text: "Track"
+                background_normal: ''
+                background_color: rgba('#ff6347')
+                color: rgba('#ffffff')
+                font_size: 18
+                on_release:
+                    root.manager.transition.direction = "left"
+                    app.root.current = "track_window"
